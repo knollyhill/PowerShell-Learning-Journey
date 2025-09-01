@@ -4,7 +4,7 @@
 # If it's 'Running', it should do nothing. 
 # Use 'Get-Service', 'Start-Service', and an 'If' statement.
 
-$spooler_service = get-service Spooler
+$spooler_service = get-service -Name Spooler
 if ($spooler_service.name -eq "Stopped") {
     Start-Service $spooler_service
 }
