@@ -3,7 +3,6 @@
 # Creates a SA within the RG
 # Confirms this was created
 # Then deletes the resource group
-# Use "Start-Sleep" between to admire your work
 
 # Reusable function that creates RG if it doesn't exist
 function Create-RGIfMissing {
@@ -67,7 +66,18 @@ function Create-RGAndSA {
         [string]$AccessTier = 'Hot'
     )
     $rg = Create-RGIfMissing -Name $RgName -Location $Location
-    $rg
     $sa = Create-SAIfMissing -Name $StorageName -ResourceGroupName $RgName -Location $Location -SkuName $SkuName -Kind $Kind -AccessTier $AccessTier
-    $sa
+
+    return [pscustomobject]@{ ResourceGroup = $rg; StorageAccount = $sa }
+
+    Start-Sleep -Seconds (15)
+
+    try {
+        Write-Host "Deleting $RgName..."
+        Remove-azresourcegroup -Name $RgName -Location $Location -Force
+        Write-Host "$RgName has been deleted."
+    }
+    catch {
+        $_
+    }
 }
